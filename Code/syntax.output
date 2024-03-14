@@ -1,0 +1,193 @@
+终端机在文法中未使用
+
+    TYPE
+
+
+语法
+
+    0 $accept: Calc $end
+
+    1 Calc: %empty
+    2     | Exp
+
+    3 Exp: Factor
+    4    | Exp ADD Factor
+    5    | Exp SUB Factor
+
+    6 Factor: Term
+    7       | Factor MUL Term
+    8       | Factor DIV Term
+
+    9 Term: INT
+
+
+终结语词，附有它们出现处的规则
+
+    $end (0) 0
+    error (256)
+    INT (258) 9
+    TYPE (259)
+    ADD (260) 4
+    SUB (261) 5
+    MUL (262) 7
+    DIV (263) 8
+
+
+非终结语词，附有它们出现处的规则
+
+    $accept (9)
+        on left: 0
+    Calc (10)
+        on left: 1 2
+        on right: 0
+    Exp (11)
+        on left: 3 4 5
+        on right: 2 4 5
+    Factor (12)
+        on left: 6 7 8
+        on right: 3 4 5 7 8
+    Term (13)
+        on left: 9
+        on right: 6 7 8
+
+
+状态 0
+
+    0 $accept: . Calc $end
+
+    INT  偏移，并进入状态 1
+
+    $default  使用规则 1 以归约 (Calc)
+
+    Calc    转到状态 2
+    Exp     转到状态 3
+    Factor  转到状态 4
+    Term    转到状态 5
+
+
+状态 1
+
+    9 Term: INT .
+
+    $default  使用规则 9 以归约 (Term)
+
+
+状态 2
+
+    0 $accept: Calc . $end
+
+    $end  偏移，并进入状态 6
+
+
+状态 3
+
+    2 Calc: Exp .
+    4 Exp: Exp . ADD Factor
+    5    | Exp . SUB Factor
+
+    ADD  偏移，并进入状态 7
+    SUB  偏移，并进入状态 8
+
+    $default  使用规则 2 以归约 (Calc)
+
+
+状态 4
+
+    3 Exp: Factor .
+    7 Factor: Factor . MUL Term
+    8       | Factor . DIV Term
+
+    MUL  偏移，并进入状态 9
+    DIV  偏移，并进入状态 10
+
+    $default  使用规则 3 以归约 (Exp)
+
+
+状态 5
+
+    6 Factor: Term .
+
+    $default  使用规则 6 以归约 (Factor)
+
+
+状态 6
+
+    0 $accept: Calc $end .
+
+    $default  接受
+
+
+状态 7
+
+    4 Exp: Exp ADD . Factor
+
+    INT  偏移，并进入状态 1
+
+    Factor  转到状态 11
+    Term    转到状态 5
+
+
+状态 8
+
+    5 Exp: Exp SUB . Factor
+
+    INT  偏移，并进入状态 1
+
+    Factor  转到状态 12
+    Term    转到状态 5
+
+
+状态 9
+
+    7 Factor: Factor MUL . Term
+
+    INT  偏移，并进入状态 1
+
+    Term  转到状态 13
+
+
+状态 10
+
+    8 Factor: Factor DIV . Term
+
+    INT  偏移，并进入状态 1
+
+    Term  转到状态 14
+
+
+状态 11
+
+    4 Exp: Exp ADD Factor .
+    7 Factor: Factor . MUL Term
+    8       | Factor . DIV Term
+
+    MUL  偏移，并进入状态 9
+    DIV  偏移，并进入状态 10
+
+    $default  使用规则 4 以归约 (Exp)
+
+
+状态 12
+
+    5 Exp: Exp SUB Factor .
+    7 Factor: Factor . MUL Term
+    8       | Factor . DIV Term
+
+    MUL  偏移，并进入状态 9
+    DIV  偏移，并进入状态 10
+
+    $default  使用规则 5 以归约 (Exp)
+
+
+状态 13
+
+    7 Factor: Factor MUL Term .
+
+    $default  使用规则 7 以归约 (Factor)
+
+
+状态 14
+
+    8 Factor: Factor DIV Term .
+
+    $default  使用规则 8 以归约 (Factor)
