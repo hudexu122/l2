@@ -7,7 +7,7 @@
 // int yylex();
 bool has_error = 0; // 存在错误
 void yyerror(char *s){
-    printf("%s!!!\n",s);
+    fprintf(stderr, "Error type B at line %d: %s.\n", yylineno, s);
 };
 
 %}
@@ -25,12 +25,22 @@ void yyerror(char *s){
 %token <type_float> FLOAT
 %token <type_string> ID
 
+//优先级
+
 %right ASSIGNOP
+%left OR
+%left AND
 %left RELOP 
+%left STAR DIV
 %left PLUS MINUS
+%right NOT
 %left LP RP LB RB DOT 
+%nonassoc LOWER_THAN_ELSE
+%nonassoc ELSE
 
 %%
+
+// High-level Definitions
 
 Program : ExtDefList
     ;
@@ -48,6 +58,8 @@ ExtDecList : VarDec
     | VarDec COMMA ExtDecList
     ;
 
+// Specifiers
+
 Specifier : TYPE
     | StructSpecifier
     ;
@@ -63,6 +75,8 @@ OptTag : ID
 Tag : ID
     ;
 
+// Declarators
+
 VarDec : ID
     | VarDec LB INT RB
     ;
@@ -76,6 +90,8 @@ VarList : ParamDec COMMA VarList
 
 ParamDec : Specifier VarDec
     ;
+
+// Statements
 
 CompSt : LC DefList StmtList RC
     ;
@@ -92,6 +108,8 @@ Stmt : Exp SEMI
     | WHILE LP Exp RP Stmt
     ;
 
+// Local Definitions
+
 DefList : Def DefList
     | 
     ;
@@ -105,6 +123,8 @@ DecList : Dec
 Dec : VarDec
     | VarDec ASSIGNOP Exp
     ;
+
+// Expressions
 
 Exp : Exp ASSIGNOP Exp
     | Exp AND Exp

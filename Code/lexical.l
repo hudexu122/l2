@@ -30,7 +30,9 @@ letter [_a-zA-Z]
 "else" { log_msg("ELSE\n"); return ELSE;}
 "while" { log_msg("WHILE\n"); return WHILE;}
 "int"|"float"  { log_msg("type: %s\n", yytext); return TYPE;}
-{digit}+ { log_msg("Integer value: %s\n", yytext); return INT;}
+0|([1-9]{digit}*) { log_msg("Integer value: %s\n", yytext); return INT;}
+[0][0-7]+ { log_msg("Oct_Integer value: %s\n", yytext); return INT;}
+[0][xX]([0-9A-Fa-f]*) { log_msg("16_Integer value: %s\n", yytext); return INT;}
 {letter}({digit}|{letter})* { log_msg("ID value: %s\n", yytext); return ID;}
 {digit}+"."{digit}+ { log_msg("Float value: %s\n", yytext); return FLOAT;}
 "+" { log_msg("PLUS\n"); return PLUS;}
@@ -51,6 +53,6 @@ letter [_a-zA-Z]
 " " {}
 "\t" {}
 "\r" {}
-. { printf("\033[1;31mError: Unexpected character '%s'\033[0m\n", yytext); }
+. { fprintf(stderr, "Error type A at line %d: Unexpected character '%s'.\n", yylineno, yytext); }
 %%
 
