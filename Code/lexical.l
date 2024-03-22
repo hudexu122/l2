@@ -2,7 +2,13 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include "syntax.tab.h"
-#define DEBUG_MODE 1  // 控制是否输出log
+#define DEBUG_MODE 0  // 控制是否输出log
+int yycolumn = 1; 
+#define YY_USER_ACTION \
+    yylloc.first_line = yylloc.last_line = yylineno; \
+        yylloc.first_column = yycolumn; \
+        yylloc.last_column = yycolumn + yyleng - 1; \
+        yycolumn += yyleng;
 
 void log_msg(const char* format, ...) {
     #if DEBUG_MODE
@@ -16,28 +22,35 @@ void log_msg(const char* format, ...) {
 
 digit [0-9]
 letter [_a-zA-Z]
+%option yylineno
 %%
-"INT"|"FLOAT"  { log_msg("type: %s\n", yytext); return TYPE;}
+"struct" { log_msg("STRUCT\n"); return STRUCT;}
+"return" { log_msg("RETURN\n"); return RETURN;}
+"if" { log_msg("IF\n"); return IF;}
+"else" { log_msg("ELSE\n"); return ELSE;}
+"while" { log_msg("WHILE\n"); return WHILE;}
+"int"|"float"  { log_msg("type: %s\n", yytext); return TYPE;}
 {digit}+ { log_msg("Integer value: %s\n", yytext); return INT;}
-{letter}({digit}|{letter})* { log_msg("ID value: %s\n", yytext); }
-{digit}+"."{digit}+ { log_msg("Float value: %s\n", yytext);}
-"+" { log_msg("PLUS\n");}
-"-" { log_msg("MINUS\n");}
-"*" { log_msg("STAR\n");}
-"/" { log_msg("DIV\n");}
-"(" { log_msg("LP\n");}
-")" { log_msg("RP\n");}
-"[" { log_msg("LB\n");}
-"]" { log_msg("RB\n");}
-"{" { log_msg("LC\n");}
-"}" { log_msg("RC\n");}
-";" { log_msg("SEMI\n");}
-"=" { log_msg("ASSIGNOP\n");}
-"," { log_msg("COMMA\n");}
-.$ { log_msg("endline\n");}
-\n { log_msg("\\n\n");}
+{letter}({digit}|{letter})* { log_msg("ID value: %s\n", yytext); return ID;}
+{digit}+"."{digit}+ { log_msg("Float value: %s\n", yytext); return FLOAT;}
+"+" { log_msg("PLUS\n"); return PLUS;}
+"-" { log_msg("MINUS\n"); return MINUS;}
+"*" { log_msg("STAR\n"); return STAR;}
+"/" { log_msg("DIV\n"); return DIV;}
+"(" { log_msg("LP\n"); return LP;}
+")" { log_msg("RP\n"); return RP;}
+"[" { log_msg("LB\n"); return LB;}
+"]" { log_msg("RB\n"); return RB;}
+"{" { log_msg("LC\n"); return LC;}
+"}" { log_msg("RC\n"); return RC;}
+";" { log_msg("SEMI\n"); return SEMI;}
+"=" { log_msg("ASSIGNOP\n"); return ASSIGNOP;}
+"," { log_msg("COMMA\n"); return COMMA;}
+.$ { log_msg("endline\n"); }
+\n { log_msg("\\n\n"); yycolumn = 1;}
 " " {}
 "\t" {}
-. { log_msg("\033[1;31mError: Unexpected character '%s'\033[0m\n", yytext); }
+"\r" {}
+. { printf("\033[1;31mError: Unexpected character '%s'\033[0m\n", yytext); }
 %%
 

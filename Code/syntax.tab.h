@@ -49,25 +49,71 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    INT = 258,
-    TYPE = 259,
-    ADD = 260,
-    SUB = 261,
-    MUL = 262,
-    DIV = 263
+    TYPE = 258,
+    PLUS = 259,
+    MINUS = 260,
+    STAR = 261,
+    DIV = 262,
+    LB = 263,
+    LC = 264,
+    LP = 265,
+    RB = 266,
+    RC = 267,
+    RP = 268,
+    SEMI = 269,
+    ASSIGNOP = 270,
+    COMMA = 271,
+    AND = 272,
+    OR = 273,
+    NOT = 274,
+    RELOP = 275,
+    DOT = 276,
+    STRUCT = 277,
+    RETURN = 278,
+    IF = 279,
+    ELSE = 280,
+    WHILE = 281,
+    INT = 282,
+    FLOAT = 283,
+    ID = 284
   };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+union YYSTYPE
+{
+#line 16 "./syntax.y"
+
+    int type_int;
+    float type_float;
+    double type_double;
+
+#line 93 "./syntax.tab.h"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
 
+/* Location type.  */
+#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
+typedef struct YYLTYPE YYLTYPE;
+struct YYLTYPE
+{
+  int first_line;
+  int first_column;
+  int last_line;
+  int last_column;
+};
+# define YYLTYPE_IS_DECLARED 1
+# define YYLTYPE_IS_TRIVIAL 1
+#endif
+
 
 extern YYSTYPE yylval;
-
+extern YYLTYPE yylloc;
 int yyparse (void);
 
 #endif /* !YY_YY_SYNTAX_TAB_H_INCLUDED  */

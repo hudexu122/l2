@@ -1,31 +1,133 @@
+%locations
 %{
 #include <stdio.h>
+#include <stdbool.h>
+#include <ctype.h>
 #include "lex.yy.c"
 // int yylex();
-void yyerror(char *s);
+bool has_error = 0; // 存在错误
+void yyerror(char *s){
+    printf("%s!!!\n",s);
+};
+
 %}
 
+/* declared types */
+%union {
+    int type_int;
+    float type_float;
+    double type_double;
+}
+
 /* declared tokens */
-%token INT TYPE
-%token ADD SUB MUL DIV
+%token TYPE PLUS MINUS STAR DIV LB LC LP RB RC RP SEMI ASSIGNOP COMMA AND OR NOT RELOP DOT STRUCT RETURN IF ELSE WHILE 
+%token <type_int> INT
+%token <type_float> FLOAT
+%token <type_string> ID
+
+%right ASSIGNOP
+%left RELOP 
+%left PLUS MINUS
+%left LP RP LB RB DOT 
 
 %%
 
-Calc : /* empty */
-    | Exp { printf("= %d\n", $1); }
+Program : ExtDefList
     ;
 
-Exp : Factor
-    | Exp ADD Factor { $$ = $1 + $3; }
-    | Exp SUB Factor { $$ = $1 - $3; }
+ExtDefList : ExtDef ExtDefList
+    |
+    ; 
+    
+ExtDef : Specifier ExtDecList SEMI
+    | Specifier SEMI
+    | Specifier FunDec CompSt
     ;
 
-Factor : Term
-    | Factor MUL Term { $$ = $1 * $3; }
-    | Factor DIV Term { $$ = $1 / $3; }
+ExtDecList : VarDec
+    | VarDec COMMA ExtDecList
     ;
 
-Term : INT
+Specifier : TYPE
+    | StructSpecifier
+    ;
+
+StructSpecifier : STRUCT OptTag LC DefList RC
+    | STRUCT Tag
+    ;
+    
+OptTag : ID
+    | 
+    ;
+
+Tag : ID
+    ;
+
+VarDec : ID
+    | VarDec LB INT RB
+    ;
+
+FunDec : ID LP VarList RP
+    | ID LP RP
+    ;
+
+VarList : ParamDec COMMA VarList
+    | ParamDec
+
+ParamDec : Specifier VarDec
+    ;
+
+CompSt : LC DefList StmtList RC
+    ;
+
+StmtList : Stmt StmtList
+    | 
+    ;
+
+Stmt : Exp SEMI
+    | CompSt
+    | RETURN Exp SEMI
+    | IF LP Exp RP Stmt
+    | IF LP Exp RP Stmt ELSE Stmt
+    | WHILE LP Exp RP Stmt
+    ;
+
+DefList : Def DefList
+    | 
+    ;
+
+Def : Specifier DecList SEMI
+    ;
+
+DecList : Dec
+    | Dec COMMA DecList
+
+Dec : VarDec
+    | VarDec ASSIGNOP Exp
+    ;
+
+Exp : Exp ASSIGNOP Exp
+    | Exp AND Exp
+    | Exp OR Exp
+    | Exp RELOP Exp
+    | Exp PLUS Exp
+    | Exp MINUS Exp
+    | Exp STAR Exp
+    | Exp DIV Exp
+    | LP Exp RP
+    | MINUS Exp
+    | NOT Exp
+    | ID LP Args RP
+    | ID LP RP
+    | Exp LB Exp RB
+    | Exp DOT ID
+    | ID
+    | INT
+    | FLOAT
+    ;
+
+Args : Exp COMMA Args
+    | Exp
     ;
 
 %%
