@@ -10,6 +10,8 @@ void yyerror(char *s){
     fprintf(stderr, "Error type B at line %d: %s.\n", yylineno, s);
 };
 
+
+
 %}
 
 /* declared types */
@@ -52,6 +54,7 @@ ExtDefList : ExtDef ExtDefList
 ExtDef : Specifier ExtDecList SEMI
     | Specifier SEMI
     | Specifier FunDec CompSt
+    | error SEMI                              { has_error = 1; }
     ;
 
 ExtDecList : VarDec
@@ -79,10 +82,12 @@ Tag : ID
 
 VarDec : ID
     | VarDec LB INT RB
+    | error RB                                { has_error = 1; }
     ;
 
 FunDec : ID LP VarList RP
     | ID LP RP
+    | error RP                                { has_error = 1; }
     ;
 
 VarList : ParamDec COMMA VarList
@@ -94,6 +99,7 @@ ParamDec : Specifier VarDec
 // Statements
 
 CompSt : LC DefList StmtList RC
+    | error RC                                { has_error = 1; }
     ;
 
 StmtList : Stmt StmtList
@@ -106,6 +112,7 @@ Stmt : Exp SEMI
     | IF LP Exp RP Stmt
     | IF LP Exp RP Stmt ELSE Stmt
     | WHILE LP Exp RP Stmt
+    | error SEMI                              { has_error = 1; }
     ;
 
 // Local Definitions

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include "syntax.tab.h"
-#define DEBUG_MODE 0  // 控制是否输出log
+#define DEBUG_MODE 1  // 控制是否输出log
 int yycolumn = 1; 
 #define YY_USER_ACTION \
     yylloc.first_line = yylloc.last_line = yylineno; \
@@ -23,7 +23,10 @@ void log_msg(const char* format, ...) {
 digit [0-9]
 letter [_a-zA-Z]
 %option yylineno
+
 %%
+"//".*\n {log_msg("//note\n"); yycolumn = 1;}
+"/*"(.|\n)*"*/" {log_msg("/*note\n"); }
 "struct" { log_msg("STRUCT\n"); return STRUCT;}
 "return" { log_msg("RETURN\n"); return RETURN;}
 "if" { log_msg("IF\n"); return IF;}
@@ -31,14 +34,16 @@ letter [_a-zA-Z]
 "while" { log_msg("WHILE\n"); return WHILE;}
 "int"|"float"  { log_msg("type: %s\n", yytext); return TYPE;}
 0|([1-9]{digit}*) { log_msg("Integer value: %s\n", yytext); return INT;}
-[0][0-7]+ { log_msg("Oct_Integer value: %s\n", yytext); return INT;}
+[0][0-7]+ { log_msg("8_Integer value: %s\n", yytext); return INT;}
 [0][xX]([0-9A-Fa-f]*) { log_msg("16_Integer value: %s\n", yytext); return INT;}
 {letter}({digit}|{letter})* { log_msg("ID value: %s\n", yytext); return ID;}
-{digit}+"."{digit}+ { log_msg("Float value: %s\n", yytext); return FLOAT;}
+{digit}+"."{digit}+|{digit}*"."{digit}+[eE][+-]?{digit}+|{digit}+"."{digit}*[eE][+-]?{digit}+ { log_msg("Float value: %s\n", yytext); return FLOAT;}
 "+" { log_msg("PLUS\n"); return PLUS;}
 "-" { log_msg("MINUS\n"); return MINUS;}
 "*" { log_msg("STAR\n"); return STAR;}
 "/" { log_msg("DIV\n"); return DIV;}
+"&&" { log_msg("AND\n"); return AND;}
+"||" { log_msg("OR\n"); return OR;}
 "(" { log_msg("LP\n"); return LP;}
 ")" { log_msg("RP\n"); return RP;}
 "[" { log_msg("LB\n"); return LB;}
@@ -48,7 +53,7 @@ letter [_a-zA-Z]
 ";" { log_msg("SEMI\n"); return SEMI;}
 "=" { log_msg("ASSIGNOP\n"); return ASSIGNOP;}
 "," { log_msg("COMMA\n"); return COMMA;}
-.$ { log_msg("endline\n"); }
+"." { log_msg("DOT\n"); return DOT;}
 \n { log_msg("\\n\n"); yycolumn = 1;}
 " " {}
 "\t" {}
