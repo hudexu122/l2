@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 /*extern FILE* yyin;
 
 int main(int argc,char** argv){
@@ -11,6 +12,9 @@ int main(int argc,char** argv){
 	while(yylex() != 0);
 	return 0;
 }*/
+
+extern bool has_error;
+//extern TreeNode* root = NULL; //根节点
 
 int main(int argc, char** argv) {
     if (argc <= 1)
@@ -26,5 +30,7 @@ int main(int argc, char** argv) {
     yyrestart(f);
     yyparse();
     
+    //if(!has_error) printTree(root,0);
+
     return 0;
 }
