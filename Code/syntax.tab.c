@@ -143,7 +143,7 @@ TreeNode* insertNode(int linenum, NodeType type, char* name, char* val, int argc
 
     va_end(argv);
 
-    //printf("insertNode %s, line:%d ,of %x\n",name,linenum,(void*)parent);
+    //printf("insertNode %s, line:%d ,of %x, val %s\n",name,linenum,(void*)parent,val);
 
     return parent;
 }
