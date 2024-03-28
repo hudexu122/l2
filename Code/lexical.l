@@ -73,12 +73,13 @@ letter [_a-zA-Z]
 "/*" {
     char c = ' ';
     char c0 = ' ', c1 = ' ';
-    while(c != EOF){
+    while(c != EOF && c != '\0'){
         c = input();
         c1 = c0;
         c0 = c;
         if(c0 == '/' && c1 == '*') break;
     } 
+    if(c == EOF || c == '\0') unput(c);
     log_msg("/*note\n"); /*wrong*/
     }
 "struct" { log_msg("STRUCT\n"); yylval.type_node = insertNode(yylineno,TYPE_TOKEN,"STRUCT",NULL,0); return STRUCT;}
@@ -93,7 +94,7 @@ letter [_a-zA-Z]
 [0][xX]([0-9A-Fa-f]*) { log_msg("16_Integer value: %s\n", yytext); yylval.type_node = insertNode(yylineno,TYPE_INT,"INT",htoi(yytext),0); return INT;}
 {letter}({digit}|{letter})* { log_msg("ID value: %s\n", yytext); yylval.type_node = insertNode(yylineno,TYPE_ID,"ID",yytext,0); return ID;}
 {digit}+"."{digit}+|{digit}*"."{digit}+[eE][+-]?{digit}+|{digit}+"."{digit}*[eE][+-]?{digit}+ { log_msg("Float value: %s\n", yytext); yylval.type_node = insertNode(yylineno,TYPE_FLOAT,"FLOAT",yytext,0); return FLOAT;}
-">"|"<"|">="|"<="|"=="|"!" {log_msg("RELOP\n"); yylval.type_node = insertNode(yylineno,TYPE_TOKEN,"RELOP",NULL,0); return RELOP;}
+">"|"<"|">="|"<="|"=="|"!=" {log_msg("RELOP\n"); yylval.type_node = insertNode(yylineno,TYPE_TOKEN,"RELOP",NULL,0); return RELOP;}
 "+" { log_msg("PLUS\n"); yylval.type_node = insertNode(yylineno,TYPE_TOKEN,"PLUS",NULL,0);return PLUS;}
 "-" { log_msg("MINUS\n"); yylval.type_node = insertNode(yylineno,TYPE_TOKEN,"MINUS",NULL,0);return MINUS;}
 "*" { log_msg("STAR\n"); yylval.type_node = insertNode(yylineno,TYPE_TOKEN,"STAR",NULL,0);return STAR;}
@@ -110,10 +111,12 @@ letter [_a-zA-Z]
 "," { log_msg("COMMA\n"); yylval.type_node = insertNode(yylineno,TYPE_TOKEN,"COMMA",NULL,0); return COMMA;}
 "=" { log_msg("ASSIGNOP\n"); yylval.type_node = insertNode(yylineno,TYPE_TOKEN,"ASSIGNOP",NULL,0); return ASSIGNOP;}
 "." { log_msg("DOT\n"); yylval.type_node = insertNode(yylineno,TYPE_TOKEN,"DOT",NULL,0); return DOT;}
+"!" { log_msg("NOT\n"); yylval.type_node = insertNode(yylineno,TYPE_TOKEN,"NOT",NULL,0); return NOT;}
 \n { log_msg("\\n\n"); yycolumn = 1;}
 " " {}
 "\t" {}
 "\r" {}
+
 [0][0-9]+ {fprintf(stdout, "Error type A at line %d: Unexpected num '%s'.\n", yylineno, yytext); has_error = 1; return INT;}
 [0][xX]([0-9A-Za-z]*) {fprintf(stdout, "Error type A at line %d: Unexpected num '%s'.\n", yylineno, yytext); has_error = 1; return INT;}
 . { fprintf(stdout, "Error type A at line %d: Unexpected character '%s'.\n", yylineno, yytext); has_error = 1; }
