@@ -111,7 +111,7 @@ void printTree(TreeNode *node, int height) {
     } else if (curtype == TYPE_TYPE || curtype == TYPE_ID || curtype == TYPE_INT) {
         printf(": %s", node->data->val);
     } else if (curtype == TYPE_FLOAT) {
-        printf(": %lf", atof(node->data->val));
+        printf(": %f", strtof(node->data->val, NULL));
     }
     printf("\n");
     printTree(node->firstChild, height + 1); // 打印子节点
@@ -153,10 +153,10 @@ void yyerror(char *s){
 %left OR
 %left AND
 %left RELOP 
-%left STAR DIV
 %left PLUS MINUS
-%right NOT
-%left LP RP LB RB DOT 
+%left STAR DIV
+%right NOT UNMINUS
+%left LP RP LB RB DOT
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
 
@@ -263,7 +263,7 @@ Exp : Exp ASSIGNOP Exp {$$ = insertNode(@$.first_line,TYPE_NO,"Exp",NULL,3,$1,$2
     | Exp STAR Exp {$$ = insertNode(@$.first_line,TYPE_NO,"Exp",NULL,3,$1,$2,$3); }
     | Exp DIV Exp {$$ = insertNode(@$.first_line,TYPE_NO,"Exp",NULL,3,$1,$2,$3); }
     | LP Exp RP {$$ = insertNode(@$.first_line,TYPE_NO,"Exp",NULL,3,$1,$2,$3); }
-    | MINUS Exp {$$ = insertNode(@$.first_line,TYPE_NO,"Exp",NULL,2,$1,$2); }
+    | MINUS Exp %prec UNMINUS {$$ = insertNode(@$.first_line,TYPE_NO,"Exp",NULL,2,$1,$2); }
     | NOT Exp {$$ = insertNode(@$.first_line,TYPE_NO,"Exp",NULL,2,$1,$2); }
     | ID LP Args RP {$$ = insertNode(@$.first_line,TYPE_NO,"Exp",NULL,4,$1,$2,$3,$4); }
     | ID LP RP {$$ = insertNode(@$.first_line,TYPE_NO,"Exp",NULL,3,$1,$2,$3); }

@@ -79,7 +79,11 @@ letter [_a-zA-Z]
         c0 = c;
         if(c0 == '/' && c1 == '*') break;
     } 
-    if(c == EOF || c == '\0') unput(c);
+    if(c == EOF || c == '\0'){
+        fprintf(stdout, "Error type A at line %d: Unexpected num '%s'.\n", yylineno, yytext); 
+        has_error = 1;
+        unput(c);
+    } 
     log_msg("/*note\n"); /*wrong*/
     }
 "struct" { log_msg("STRUCT\n"); yylval.type_node = insertNode(yylineno,TYPE_TOKEN,"STRUCT",NULL,0); return STRUCT;}

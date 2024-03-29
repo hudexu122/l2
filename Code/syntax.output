@@ -123,74 +123,75 @@
     INT <type_node> (282) 18 60
     FLOAT <type_node> (283) 61
     ID <type_node> (284) 14 16 17 20 21 55 56 58 59
-    LOWER_THAN_ELSE (285)
+    UNMINUS (285)
+    LOWER_THAN_ELSE (286)
 
 
 非终结语词，附有它们出现处的规则
 
-    $accept (31)
+    $accept (32)
         on left: 0
-    Program <type_node> (32)
+    Program <type_node> (33)
         on left: 1
         on right: 0
-    ExtDefList <type_node> (33)
+    ExtDefList <type_node> (34)
         on left: 2 3
         on right: 1 2
-    ExtDef <type_node> (34)
+    ExtDef <type_node> (35)
         on left: 4 5 6 7
         on right: 2
-    ExtDecList <type_node> (35)
+    ExtDecList <type_node> (36)
         on left: 8 9
         on right: 4 9
-    Specifier <type_node> (36)
+    Specifier <type_node> (37)
         on left: 10 11
         on right: 4 5 6 25 39
-    StructSpecifier <type_node> (37)
+    StructSpecifier <type_node> (38)
         on left: 12 13
         on right: 11
-    OptTag <type_node> (38)
+    OptTag <type_node> (39)
         on left: 14 15
         on right: 12
-    Tag <type_node> (39)
+    Tag <type_node> (40)
         on left: 16
         on right: 13
-    VarDec <type_node> (40)
+    VarDec <type_node> (41)
         on left: 17 18 19
         on right: 8 9 18 25 42 43
-    FunDec <type_node> (41)
+    FunDec <type_node> (42)
         on left: 20 21 22
         on right: 6
-    VarList <type_node> (42)
+    VarList <type_node> (43)
         on left: 23 24
         on right: 20 23
-    ParamDec <type_node> (43)
+    ParamDec <type_node> (44)
         on left: 25
         on right: 23 24
-    CompSt <type_node> (44)
+    CompSt <type_node> (45)
         on left: 26 27
         on right: 6 31
-    StmtList <type_node> (45)
+    StmtList <type_node> (46)
         on left: 28 29
         on right: 26 28
-    Stmt <type_node> (46)
+    Stmt <type_node> (47)
         on left: 30 31 32 33 34 35 36
         on right: 28 33 34 35
-    DefList <type_node> (47)
+    DefList <type_node> (48)
         on left: 37 38
         on right: 12 26 37
-    Def <type_node> (48)
+    Def <type_node> (49)
         on left: 39
         on right: 37
-    DecList <type_node> (49)
+    DecList <type_node> (50)
         on left: 40 41
         on right: 39 41
-    Dec <type_node> (50)
+    Dec <type_node> (51)
         on left: 42 43
         on right: 40 41
-    Exp <type_node> (51)
+    Exp <type_node> (52)
         on left: 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61
         on right: 30 32 33 34 35 43 44 45 46 47 48 49 50 51 52 53 54 57 58 62 63
-    Args <type_node> (52)
+    Args <type_node> (53)
         on left: 62 63
         on right: 55 62
 
@@ -1369,8 +1370,10 @@
    57    | Exp . LB Exp RB
    58    | Exp . DOT ID
 
-    LB   偏移，并进入状态 85
-    DOT  偏移，并进入状态 91
+    STAR  偏移，并进入状态 83
+    DIV   偏移，并进入状态 84
+    LB    偏移，并进入状态 85
+    DOT   偏移，并进入状态 91
 
     $default  使用规则 48 以归约 (Exp)
 
@@ -1389,8 +1392,10 @@
    57    | Exp . LB Exp RB
    58    | Exp . DOT ID
 
-    LB   偏移，并进入状态 85
-    DOT  偏移，并进入状态 91
+    STAR  偏移，并进入状态 83
+    DIV   偏移，并进入状态 84
+    LB    偏移，并进入状态 85
+    DOT   偏移，并进入状态 91
 
     $default  使用规则 49 以归约 (Exp)
 
@@ -1409,10 +1414,8 @@
    57    | Exp . LB Exp RB
    58    | Exp . DOT ID
 
-    PLUS   偏移，并进入状态 81
-    MINUS  偏移，并进入状态 82
-    LB     偏移，并进入状态 85
-    DOT    偏移，并进入状态 91
+    LB   偏移，并进入状态 85
+    DOT  偏移，并进入状态 91
 
     $default  使用规则 50 以归约 (Exp)
 
@@ -1431,10 +1434,8 @@
    57    | Exp . LB Exp RB
    58    | Exp . DOT ID
 
-    PLUS   偏移，并进入状态 81
-    MINUS  偏移，并进入状态 82
-    LB     偏移，并进入状态 85
-    DOT    偏移，并进入状态 91
+    LB   偏移，并进入状态 85
+    DOT  偏移，并进入状态 91
 
     $default  使用规则 51 以归约 (Exp)
 
